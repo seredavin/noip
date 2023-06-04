@@ -256,7 +256,7 @@ func main() {
 		return
 	}
 
-	http.HandleFunc("/noip", handleRequest)
+	http.HandleFunc("/update", handleRequest)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", config.Settings.Port), nil)
 	if err != nil {
