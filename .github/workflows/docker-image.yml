@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate image name
+        run: echo "IMAGE_NAME=${{ secrets.DOCKER_HUB_LOGIN }}/noip:$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - name: Login in docker
+        run: docker login -u=${{ secrets.DOCKER_HUB_LOGIN }} -p=${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Push to docker hub
+        run: docker push $IMAGE_NAME
