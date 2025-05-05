@@ -196,6 +196,7 @@ func deleteAlias(settings Settings, client Client) error {
 
 	err := sendPostRequest(settings, query, "/api/regru2/zone/remove_record")
 	if err != nil {
+		log.Printf("error client %v witn fqdn %v deleting from dns: %v", client.Name, client.Subdomain+"."+client.Domain, err)
 		return err
 	}
 
