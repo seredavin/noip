@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gopkg.in/yaml.v2"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -241,7 +242,12 @@ func sendPostRequest(settings Settings, rewQuery string, path string) error {
 
 	// Проверка статусного кода ответа
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("неправильный статусный код: %d", resp.StatusCode)
+		// Чтение тела ответа для логирования
+		bodyBytes, readErr := io.ReadAll(resp.Body)
+		if readErr != nil {
+			return fmt.Errorf("неправильный статусный код: %d, ошибка чтения тела ответа: %v", resp.StatusCode, readErr)
+		}
+		return fmt.Errorf("неправильный статусный код: %d, тело ответа: %s", resp.StatusCode, bodyBytes)
 	}
 
 	return nil
